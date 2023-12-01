@@ -49,9 +49,9 @@ namespace AdventOfCode2023.Tests.Day01
 		[InlineData("nrhdxfsqvxcbcghf35eightthreeseven5", 35)]
 		public void TrebuchetCalibration_SampleInputs_Part2(string line, int expected)
 		{
-			var sut = new TrebuchetService(null);
+			var sut = new TrebuchetServiceV2(null);
 
-			var actual = sut.ParseCalibrationValueV2(line);
+			var actual = sut.ParseCalibrationValue(line);
 
 			Assert.Equal(expected, actual);
 		}
@@ -61,9 +61,9 @@ namespace AdventOfCode2023.Tests.Day01
 		[InlineData("Day01/Input/Part1.txt", 54581)]
 		public void TrebuchetCalibration_Part2(string inputPath, int expected)
 		{
-			var sut = new TrebuchetService(new FilesService());
+			var sut = new TrebuchetServiceV2(new FilesService());
 
-			var values = sut.GetTrebuchetCalibrationValuesV2(inputPath);
+			var values = sut.GetTrebuchetCalibrationValues(inputPath);
 
 			var actual = values.Sum();
 
