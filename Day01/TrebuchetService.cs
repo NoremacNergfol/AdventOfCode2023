@@ -1,4 +1,5 @@
 ﻿using AdventOfCode2023.Common;
+using System.Text;
 
 namespace AdventOfCode2023.Day01
 {
@@ -80,25 +81,47 @@ namespace AdventOfCode2023.Day01
 
 		public int ParseCalibrationValueV2(string line)
 		{
-			int number1 = -1;
-			int number2 = -1;
+			var number1 = -1;
+			var number2 = -1;
+			var stringBuilder = new StringBuilder(5);
 
 			for (int i = 0; i < line.Length; i++)
 			{
 				char character = line[i];
 
+				if (stringBuilder.Length >= 5)
+				{
+					stringBuilder.Remove(0, 1);
+				}
+				stringBuilder.Append(character);
+
 				int value = -1;
 				if (character >= '0' && character <= '9')
 				{
 					value = character - '0';
+					stringBuilder.Clear();
 				}
-				else
+				else if (stringBuilder.Length >= 3)
 				{
-					var currentString = line[..(i + 1)];
-
 					foreach (var kvp in SpelledOutNumbers)
 					{
-						if (currentString.EndsWith(kvp.Key))
+						if (kvp.Key.Length > stringBuilder.Length)
+						{
+							continue;
+						}
+
+						bool isMatch = true;
+						for (int j = kvp.Key.Length - 1; j >= 0; j--)
+						{
+							int invertedIndex = kvp.Key.Length - 1 - j;
+							if (kvp.Key[j] != stringBuilder[stringBuilder.Length - 1 - invertedIndex])
+							{
+								isMatch = false;
+								break;
+							}
+						}
+
+						if (isMatch)
 						{
 							value = kvp.Value;
 							break;
