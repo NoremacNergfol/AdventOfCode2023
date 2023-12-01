@@ -24,33 +24,39 @@ namespace AdventOfCode2023.Day01
 
 		public int ParseCalibrationValue(string line)
 		{
-			int number1 = -1;
-			int number2 = -1;
+			// keep track of the first and last numbers
+			// and set them to placeholder values
+			int firstNumber = -1;
+			int lastNumber = -1;
 
 			foreach (char character in line)
 			{
+				// process the character when it is a when it is a number (0 - 9)
 				if (character >= '0' && character <= '9')
 				{
-					var value = character - '0';
+					// subtract the current character from '0' to get it's integer value
+					int value = character - '0';
 
-					if (number1 != -1)
+					// assign the value to the first number or last number
+					if (firstNumber == -1)
 					{
-						number2 = value;
+						firstNumber = value;
 					}
 					else
 					{
-						number1 = value;
+						lastNumber = value;
 					}
 				}
 			}
 
-			if (number2 != -1)
+			if (lastNumber == -1)
 			{
-				return number1 * 10 + number2;
+				// when there is no last number, use the first number twice
+				return firstNumber * 10 + firstNumber;
 			}
 			else
 			{
-				return number1 * 10 + number1;
+				return firstNumber * 10 + lastNumber;
 			}
 		}
 	}

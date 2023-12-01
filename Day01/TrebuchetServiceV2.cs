@@ -38,40 +38,45 @@ namespace AdventOfCode2023.Day01
 
 		public int ParseCalibrationValue(string line)
 		{
-			var number1 = -1;
-			var number2 = -1;
-			var stringBuilder = new StringBuilder(5);
+			// keep track of the first and last numbers
+			// and set them to placeholder values
+			int firstNumber = -1;
+			int lastNumber = -1;
+			var buffer = new StringBuilder(5);
 
-			for (int i = 0; i < line.Length; i++)
+			foreach (char character in line)
 			{
-				char character = line[i];
-
-				if (stringBuilder.Length >= 5)
-				{
-					stringBuilder.Remove(0, 1);
-				}
-				stringBuilder.Append(character);
-
 				int value = -1;
+
+				if (buffer.Length >= 5)
+				{
+					buffer.Remove(0, 1);
+				}
+				buffer.Append(character);
+
+				// process the character when it is a when it is a number (0 - 9)
 				if (character >= '0' && character <= '9')
 				{
+					// subtract the current character from '0' to get it's integer value
 					value = character - '0';
-					stringBuilder.Clear();
 				}
-				else if (stringBuilder.Length >= 3)
+				// when the buffer as enough characters see if its equal to a number
+				else if (buffer.Length >= 3)
 				{
 					foreach (var kvp in SpelledOutNumbers)
 					{
-						if (kvp.Key.Length > stringBuilder.Length)
+						// when the buffer is too small for the current number, skip it
+						if (kvp.Key.Length > buffer.Length)
 						{
 							continue;
 						}
 
 						bool isMatch = true;
-						for (int j = kvp.Key.Length - 1; j >= 0; j--)
+						// confusingly compare each character of the number against the buffer
+						for (int i = kvp.Key.Length - 1; i >= 0; i--)
 						{
-							int invertedIndex = kvp.Key.Length - 1 - j;
-							if (kvp.Key[j] != stringBuilder[stringBuilder.Length - 1 - invertedIndex])
+							int invertedIndex = kvp.Key.Length - 1 - i;
+							if (kvp.Key[i] != buffer[buffer.Length - 1 - invertedIndex])
 							{
 								isMatch = false;
 								break;
@@ -91,23 +96,25 @@ namespace AdventOfCode2023.Day01
 					continue;
 				}
 
-				if (number1 != -1)
+				// assign the value to the first number or last number
+				if (firstNumber == -1)
 				{
-					number2 = value;
+					firstNumber = value;
 				}
 				else
 				{
-					number1 = value;
+					lastNumber = value;
 				}
 			}
 
-			if (number2 != -1)
+			if (lastNumber == -1)
 			{
-				return number1 * 10 + number2;
+				// when there is no last number, use the first number twice
+				return firstNumber * 10 + firstNumber;
 			}
 			else
 			{
-				return number1 * 10 + number1;
+				return firstNumber * 10 + lastNumber;
 			}
 		}
 	}
