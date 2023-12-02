@@ -47,12 +47,30 @@ namespace AdventOfCode2023.Day02
 					GreenCubes = green,
 					RedCubes = red,
 				};
-			});
+			}).ToList();
+
+			int minRed = 0;
+			int minGreen = 0;
+			int minBlue = 0;
+
+			foreach (var set in sets)
+			{
+				minBlue = Math.Max(minBlue, set.BlueCubes);
+				minGreen = Math.Max(minGreen, set.GreenCubes);
+				minRed = Math.Max(minRed, set.RedCubes);
+			}
 
 			return new CubeGameInstance
 			{
 				Id = id,
-				Sets = sets.ToList()
+				Sets = sets,
+				MinimumCubeGameBagForPossibility = new CubeGameBag
+				{
+					BlueCubes = minBlue,
+					GreenCubes = minGreen,
+					RedCubes = minRed
+				},
+				Power = minBlue * minGreen * minRed,
 			};
 		}
 

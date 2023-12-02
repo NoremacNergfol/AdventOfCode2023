@@ -57,13 +57,27 @@ namespace AdventOfCode2023.Tests.Day02
 		[Theory]
 		[InlineData("Day02/Input/Part1.txt", 2237)]
 		[InlineData("Day02/Input/SamplePart1.txt", 8)]
-		public void GetCubeGameInstances_Success(string inputPath, int expected)
+		public void GetCubeGameInstances_Part1(string inputPath, int expected)
 		{
 			var sut = new CubeGameService(new Common.FilesService());
 
 			var instances = sut.GetCubeGameInstances(inputPath);
 
 			var possibleGameIdsSum = instances.Where(i => i.IsPossible).Select(i => i.Id).Sum();
+
+			Assert.Equal(expected, possibleGameIdsSum);
+		}
+
+		[Theory]
+		[InlineData("Day02/Input/Part1.txt", 66681)]
+		[InlineData("Day02/Input/SamplePart1.txt", 2286)]
+		public void GetCubeGameInstances_Part2(string inputPath, int expected)
+		{
+			var sut = new CubeGameService(new Common.FilesService());
+
+			var instances = sut.GetCubeGameInstances(inputPath);
+
+			var possibleGameIdsSum = instances.Select(i => i.Power).Sum();
 
 			Assert.Equal(expected, possibleGameIdsSum);
 		}

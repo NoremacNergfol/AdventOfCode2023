@@ -5,5 +5,7 @@
 		public int Id { get; set; }
 		public List<CubeGameSet> Sets { get; set; }
 		public bool IsPossible { get; set; }
+		public CubeGameBag MinimumCubeGameBagForPossibility { get; set; }
+		public int Power { get; set; }
 	}
 }
