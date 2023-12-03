@@ -11,14 +11,28 @@ namespace AdventOfCode2023.Tests.Day03
 		{
 			var sut = new GondolaPartsService(new Common.FilesService());
 
-			var partNumbers = sut.GetPartNumbers(inputPath);
+			var engineSchematic = sut.GetEngineSchematic(inputPath);
 
-			var actual = partNumbers.Select(pn => pn.Id).Sum();
+			var actual = engineSchematic.PartNumbers.Select(pn => pn.Id).Sum();
 
 			foreach (var number in invalidNumbers)
 			{
-				Assert.DoesNotContain(partNumbers, pn => pn.Id.Equals(number));
+				Assert.DoesNotContain(engineSchematic.PartNumbers, pn => pn.Id.Equals(number));
 			}
+
+			Assert.Equal(expected, actual);
+		}
+
+		[Theory]
+		[InlineData("Day03/Input/SamplePart1.txt", 467835)]
+		[InlineData("Day03/Input/Part1.txt", 91031374)]
+		public void GetPartNumbers_Part2(string inputPath, int expected)
+		{
+			var sut = new GondolaPartsService(new Common.FilesService());
+
+			var engineSchematic = sut.GetEngineSchematic(inputPath);
+
+			var actual = engineSchematic.Gears.Select(g => g.Value.Ratio).Sum();
 
 			Assert.Equal(expected, actual);
 		}

@@ -11,7 +11,7 @@ namespace AdventOfCode2023.Day03
 		{
 			_filesService = filesService;
 		}
-		public List<PartNumber> GetPartNumbers(string inputPath)
+		public EngineSchematic GetEngineSchematic(string inputPath)
 		{
 			var lines = _filesService.ReadAllLines(inputPath);
 
@@ -31,12 +31,37 @@ namespace AdventOfCode2023.Day03
 							Y = kvp.Key.Y + y
 						};
 
-						if (schematic.PartNumbers.TryGetValue(pointToCheck, out PartNumber partNumber))
+						if (schematic.PossiblePartNumbers.TryGetValue(pointToCheck, out PartNumber partNumber))
 						{
 							if (!partNumber.Consumed)
 							{
 								partNumber.Consumed = true;
 								partNumbers.Add(partNumber.Id);
+							}
+
+							if (kvp.Value == '*')
+							{
+								var gear = schematic.Gears[kvp.Key];
+
+								if (!gear.PartNumbers.Contains(partNumber))
+								{
+									gear.PartNumbers.Add(partNumber);
+
+									gear.AdjacentNumbers++;
+
+									if (gear.AdjacentNumbers == 1)
+									{
+										gear.Ratio = partNumber.Id;
+									}
+									else if (gear.AdjacentNumbers == 2)
+									{
+										gear.Ratio *= partNumber.Id;
+									}
+									else
+									{
+										gear.Ratio = 0;
+									}
+								}
 							}
 						}
 					}
@@ -50,7 +75,11 @@ namespace AdventOfCode2023.Day03
 				})
 				.ToList();
 
-			return final;
+			schematic.PartNumbers = final;
+
+			schematic.Gears = schematic.Gears.Where(g => g.Value.AdjacentNumbers == 2).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+			return schematic;
 		}
 
 		private EngineSchematic BuildEngineSchematic(string[] lines)
@@ -60,6 +89,7 @@ namespace AdventOfCode2023.Day03
 			var numbers = new Dictionary<Point, char>();
 			var partNumbers = new Dictionary<Point, PartNumber>();
 			var symbols = new Dictionary<Point, char>();
+			var gears = new Dictionary<Point, Gear>();
 
 			var stringBuilder = new StringBuilder();
 			var numbers2Points = new List<Point>();
@@ -88,6 +118,15 @@ namespace AdventOfCode2023.Day03
 						{
 							symbols.Add(point, grid[x, y]);
 							ApplyNumberToSchematic(stringBuilder, numbers2Points, partNumbers);
+
+							if (grid[x, y] == '*')
+							{
+								gears.Add(point, new Gear
+								{
+									Point = point,
+									Ratio = 0
+								});
+							}
 						}
 					}
 					else
@@ -104,7 +143,8 @@ namespace AdventOfCode2023.Day03
 				Grid = grid,
 				Numbers = numbers,
 				Symbols = symbols,
-				PartNumbers = partNumbers
+				PossiblePartNumbers = partNumbers,
+				Gears = gears,
 			};
 		}
 
