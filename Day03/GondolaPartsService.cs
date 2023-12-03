@@ -17,7 +17,7 @@ namespace AdventOfCode2023.Day03
 
 			var schematic = BuildEngineSchematic(lines);
 
-			var partNumbers = new List<int>();
+			var partNumbers = new HashSet<PartNumber>();
 
 			foreach (var kvp in schematic.Symbols)
 			{
@@ -33,15 +33,11 @@ namespace AdventOfCode2023.Day03
 
 						if (schematic.PossiblePartNumbers.TryGetValue(pointToCheck, out PartNumber partNumber))
 						{
-							if (!partNumber.Consumed)
-							{
-								partNumber.Consumed = true;
-								partNumbers.Add(partNumber.Id);
-							}
+							partNumbers.Add(partNumber);
 
 							if (kvp.Value == '*')
 							{
-								var gear = schematic.Gears[kvp.Key];
+								var gear = schematic.PossibleGears[kvp.Key];
 
 								if (!gear.PartNumbers.Contains(partNumber))
 								{
@@ -68,16 +64,13 @@ namespace AdventOfCode2023.Day03
 				}
 			}
 
-			var final = partNumbers
-				.Select(n => new PartNumber
-				{
-					Id = n
-				})
+			schematic.PartNumbers = partNumbers
 				.ToList();
 
-			schematic.PartNumbers = final;
-
-			schematic.Gears = schematic.Gears.Where(g => g.Value.AdjacentNumbers == 2).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+			schematic.Gears = schematic.PossibleGears
+				.Where(g => g.Value.AdjacentNumbers == 2)
+				.Select(g => g.Value)
+				.ToList();
 
 			return schematic;
 		}
@@ -144,7 +137,7 @@ namespace AdventOfCode2023.Day03
 				Numbers = numbers,
 				Symbols = symbols,
 				PossiblePartNumbers = partNumbers,
-				Gears = gears,
+				PossibleGears = gears,
 			};
 		}
 

@@ -32,7 +32,7 @@ namespace AdventOfCode2023.Tests.Day03
 
 			var engineSchematic = sut.GetEngineSchematic(inputPath);
 
-			var actual = engineSchematic.Gears.Select(g => g.Value.Ratio).Sum();
+			var actual = engineSchematic.Gears.Select(g => g.Ratio).Sum();
 
 			Assert.Equal(expected, actual);
 		}
