@@ -21,9 +21,4 @@
     <None Remove="AdventOfCode2023.Tests\**" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="Day02\Input\" />
-  </ItemGroup>
-
 </Project>
