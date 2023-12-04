@@ -7,5 +7,7 @@
 		public int[] Numbers { get; set; }
 		public List<NumberMatch> Matches { get; set; }
 		public int Points { get; set; }
+		public bool CopiesProcessed { get; set; }
+		public int ChildCopies { get; set; }
 	}
 }

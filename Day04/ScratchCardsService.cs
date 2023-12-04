@@ -69,5 +69,57 @@ namespace AdventOfCode2023.Day04
 
 			return scratchCards;
 		}
+
+		public int ProcessCopiesAndCountThem(List<ScratchCard> scratchCards)
+		{
+			var count = 0;
+
+			var dictionary = scratchCards.ToDictionary(sc => sc.Id, sc => sc);
+
+			for (int i = 0; i < scratchCards.Count; i++)
+			{
+				var scratchCard = scratchCards[i];
+
+				count += InternalProcessCopiesAndCountThem(scratchCard, dictionary);
+			}
+
+			return count;
+		}
+
+		private int InternalProcessCopiesAndCountThem(ScratchCard current, Dictionary<int, ScratchCard> dictionary)
+		{
+			if (current == null)
+			{
+				return 0;
+			}
+
+			if (current.CopiesProcessed)
+			{
+				return current.ChildCopies;
+			}
+
+			if (!current.Matches.Any())
+			{
+				current.CopiesProcessed = true;
+				current.ChildCopies = 1;
+				return 1;
+			}
+
+			var count = 1;
+			var index = current.Id;
+			foreach (var match in current.Matches)
+			{
+				index++;
+				if (dictionary.TryGetValue(index, out ScratchCard copy))
+				{
+					count += InternalProcessCopiesAndCountThem(copy, dictionary);
+				}
+			}
+
+			current.CopiesProcessed = true;
+			current.ChildCopies = count;
+
+			return count;
+		}
 	}
 }

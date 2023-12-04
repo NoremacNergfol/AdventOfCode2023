@@ -17,5 +17,18 @@ namespace AdventOfCode2023.Tests.Day04
 
 			Assert.Equal(expected, actual);
 		}
+
+		[Theory]
+		[InlineData("Day04/Input/SamplePart1.txt", 30)]
+		[InlineData("Day04/Input/Part1.txt", 14624680)]
+		public void GetScratchCards_Part2(string inputPath, int expected)
+		{
+			var sut = new ScratchCardsService(new Common.FilesService());
+
+			var scratchCards = sut.ParseScratchCards(inputPath);
+			var actual = sut.ProcessCopiesAndCountThem(scratchCards);
+
+			Assert.Equal(expected, actual);
+		}
 	}
 }
